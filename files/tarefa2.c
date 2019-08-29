@@ -49,53 +49,44 @@ void incluir_dados(int tamanho, struct tipo_alunos alunos[], FILE *file)
         printf("nome do aluno %d:\n", i+1);//fwrite(variavel, tamanho em bytes, quantidade de unidades(ex: vetores), arquivo);
         scanf(" %s", alunos[i].nome_aluno);
         fwrite(alunos[i].nome_aluno, sizeof(alunos[i].nome_aluno), 1, file);
-        //fwrite("\n", sizeof("\n"), 1, file);
-
+        
         printf("nota 1:\n");
         scanf("%f", &alunos[i].nota1);
         fwrite(&alunos[i].nota1, sizeof(alunos[i].nota1), 1, file);
-        //fwrite("\n", sizeof("\n"), 1, file);
 
         printf("nota 2:\n");
         scanf("%f", &alunos[i].nota2);
         fwrite(&alunos[i].nota2, sizeof(alunos[i].nota2), 1, file);
-        //fwrite("\n", sizeof("\n"), 1, file);
 
         printf("\n\n");
-        //fwrite("\n", sizeof("\n"), 1, file);
     }
     fclose(file);
-
 }
 
-void ler_matricula(int tamanho, struct tipo_alunos alunos[], FILE *file) //opcao 1-ver dados do aluno  NAO FUNFA(AINDA)
+void ler_matricula() //opcao 1-ver dados do aluno
 {
     int matricula_desejada;
-    int count = 0, i;
-    int result;
-
+    struct tipo_alunos aluno;
+    int achou = 0;
+    
+    FILE *file;
+    
     file = fopen("alunos.txt", "rb");//abre arquivo com permissao para leitura
 
     printf("digite a matricula do aluno desejado:\n");
     scanf("%d", &matricula_desejada);
-    printf("chegou aqui");
-   
-    for(i=0; i<tamanho; i++)
-   {
-        result = alunos[i].matricula_aluno;
-        printf("chegou aqui");
+    //printf("tamanho struct %d\n", sizeof(struct tipo_alunos));
+    //printf("tamanho retornado fread: %d\n", fread(&aluno, sizeof(struct tipo_alunos), 1, file));
 
-        if(result == matricula_desejada){
-            fseek(file, count*sizeof(struct tipo_alunos), SEEK_SET);
-            fread(&alunos, sizeof(struct tipo_alunos), 1, file);
-            printf("matricula: %d\n", alunos[i].matricula_aluno);
-            printf("nota 1: %.2f\n", alunos[i].nota1);
-            printf("nota 2: %.2f\n", alunos[i].nota2);
-            count++;
-        }
+    while(achou == 0 && fread(&aluno, sizeof(struct tipo_alunos), 1, file) > 0)
+    {
+        printf("%d", aluno.matricula_aluno);
+        achou = aluno.matricula_aluno == matricula_desejada ? 1 : 0;        
     }
-    if(count == 0){
+    if(achou == 0){
         printf("aluno nao encontrado:\n");
+    }else{
+        printf("numero da matricula:%d\n", aluno.matricula_aluno);
     }
     
     fclose(file);//fecha arquivo
@@ -148,7 +139,7 @@ int escolher_opcao(int tamanho, struct tipo_alunos alunos[], FILE *file)
     {
         escolha = menu();
         if(escolha == 1){
-            ler_matricula(tamanho, alunos, file);
+            ler_matricula();
         }else if(escolha == 2){
             alterar_notas(tamanho, alunos, file);
         }
@@ -157,7 +148,7 @@ int escolher_opcao(int tamanho, struct tipo_alunos alunos[], FILE *file)
 
 int main()
 {
-    int tamanho = 3;
+    int tamanho = 2;
     struct tipo_alunos alunos[tamanho];
 
     FILE *file;
