@@ -28,10 +28,10 @@ void fill_professions(struct type_profession profession[5], int *count)
         scanf("%d", &profession[*count].profession_code);
         if(profession[*count].profession_code != -1){
             printf("enter the %d profession name: \n", *count + 1);
-            scanf("%[^\n]", profession[*count].profession_name); // SCANF NAO FUNCIONA  
+	    scanf("%s", profession[*count].profession_name);
             //fgets(profession[*count].profession_name, 100, pfile);
             printf("enter the %d profession description\n", *count + 1);
-            scanf("%[^\n]", profession[*count].profession_description);
+            scanf("%s", profession[*count].profession_description);
             //fgets(profession[*count].profession_description, 100, pfile);
             (*count)++;
         }

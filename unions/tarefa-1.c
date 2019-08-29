@@ -12,7 +12,7 @@ struct tipo_livro_catalogado
     char autor[20];
     char titulo[20];
     char data[10];
-    char editora[20]; 
+    char editora[20];
     char cidade[20];
 };
 
@@ -197,7 +197,7 @@ void preenche_cadastro(enum obras enum_obras, struct tipo_categoria_escolhida ca
 
 void mostra_acervo(struct tipo_categoria_escolhida categoria_escolhida[] ,int *count ,int opcao)
 {
-    int i; 
+    int i;
 
     if(opcao == 4){
         for(i=0; i < *count; i++)
@@ -212,10 +212,10 @@ void mostra_acervo(struct tipo_categoria_escolhida categoria_escolhida[] ,int *c
 int main()
 {
     int opcao, count = 0;
-    
+
     enum obras enum_obras;
     struct tipo_categoria_escolhida categoria_escolhida[count];
-    
+
     preenche_cadastro(enum_obras,categoria_escolhida , &count ,opcao);
     mostra_acervo(categoria_escolhida, &count ,opcao);
 }
