@@ -19,13 +19,13 @@ int inicializa_matriz_auxiliar(int linha , int coluna, int matriz_auxiliar[10][1
     return matriz_auxiliar[10][10];
 }
 
-void printa_matriz(int linha , int coluna, int matriz[10][10])
+void printa_matriz(int matriz[10][10])
 {
     int i, j;
 
-    for(i=0; i<linha; i++)
+    for(i=0; i<10; i++)
     {
-        for(j=0; j<coluna; j++)
+        for(j=0; j<10; j++)
         {
             printf("%d ", matriz[i][j]);
         }
@@ -127,9 +127,10 @@ int define_coordenada_linha_coluna(int coordenada_linha, int coordenada_coluna, 
 
 //________________________________MOVIMENTOS_____________________________________________
 
-int abaixo(int linha_atual, int coluna_atual, int matriz_principal[10][10], int matriz_auxiliar[10][10])
+//-------------------------------------ABAIXO---------------------------------------------------------------------------
+int verifica_abaixo(int linha_atual, int coluna_atual, int matriz_principal[10][10], int matriz_auxiliar[10][10])
 {
-    int posicao_abaixo, valida_posicao, valida_coordenada;
+    int posicao_abaixo, valida_posicao, valida_coordenada, valida_abaixo;
 
     posicao_abaixo = linha_atual + 1; //a posicao posicao_abaixo sera a linha atual + 1
 
@@ -137,21 +138,23 @@ int abaixo(int linha_atual, int coluna_atual, int matriz_principal[10][10], int 
 
     valida_coordenada = verifica_coordenada(posicao_abaixo, coluna_atual, matriz_principal);// a posicao deve valer 1!!
 
-    if(valida_posicao != 0 && valida_coordenada != 0){
-        
-        printf("a coordenada posicao_abaixo eh valida\n");
-        linha_atual = posicao_abaixo;//atualiza posicao atual
-
-        return linha_atual;
-    
-    }else{
-        printf("posicao posicao_abaixo invalida\n\n");
-    }
+    valida_abaixo = (valida_posicao) != 0 && (valida_coordenada != 0) ? 1 : 0;
 }
 
-int acima(int linha_atual, int coluna_atual, int matriz_principal[10][10], int matriz_auxiliar[10][10])
+int abaixo(int linha_atual, int coluna_atual, int matriz_principal[10][10], int matriz_auxiliar[10][10])
 {
-    int posicao_acima, valida_posicao, valida_coordenada;
+    int posicao_abaixo = linha_atual + 1;
+
+    linha_atual = posicao_abaixo;//atualiza posicao atual
+
+    return linha_atual;
+}
+
+//---------------------------------------ACIMA-------------------------------------------------------------------------
+
+int verifica_acima(int linha_atual, int coluna_atual, int matriz_principal[10][10], int matriz_auxiliar[10][10])
+{
+    int posicao_acima, valida_posicao, valida_coordenada, valida_acima;
 
     posicao_acima = linha_atual - 1;
 
@@ -159,21 +162,22 @@ int acima(int linha_atual, int coluna_atual, int matriz_principal[10][10], int m
 
     valida_coordenada = verifica_coordenada(posicao_acima, coluna_atual, matriz_principal);// a posicao deve valer 1!!
 
-    if(valida_posicao != 0 && valida_coordenada != 0){
-        
-        printf("a coordenada posicao_acima eh valida\n");
-        linha_atual = posicao_acima;//atualiza posicao atual
-
-        return linha_atual;
-    
-    }else{
-        printf("posicao posicao_acima invalida\n\n");
-    }
+    valida_acima = (valida_posicao != 0) && (valida_coordenada != 0) ? 1 : 0;
 }
 
-int direita(int linha_atual, int coluna_atual, int matriz_principal[10][10], int matriz_auxiliar[10][10])
+int acima(int linha_atual, int coluna_atual, int matriz_principal[10][10], int matriz_auxiliar[10][10])
 {
-    int posicao_direita, valida_posicao, valida_coordenada;
+    int posicao_acima = linha_atual - 1;
+
+    linha_atual = posicao_acima;//atualiza posicao atual
+
+    return linha_atual;
+}
+//-----------------------------------DIREITA------------------------------------------------------------------------------------
+
+int verifica_direita(int linha_atual, int coluna_atual, int matriz_principal[10][10])
+{
+    int posicao_direita, valida_posicao, valida_coordenada, valida_direita;
 
     posicao_direita = coluna_atual + 1;
 
@@ -181,21 +185,25 @@ int direita(int linha_atual, int coluna_atual, int matriz_principal[10][10], int
 
     valida_coordenada = verifica_coordenada(posicao_direita, coluna_atual, matriz_principal);// a posicao deve valer 1!!
 
-    if(valida_posicao != 0 && valida_coordenada != 0){
-        
-        printf("a coordenada posicao_direita eh valida\n");
-        linha_atual = posicao_direita;//atualiza posicao atual
+    valida_direita = (valida_posicao != 0) && (valida_coordenada != 0) ? 1 : 0;
 
-        return linha_atual;
-    
-    }else{
-        printf("posicao posicao_direita invalida\n\n");
-    }
+    return valida_direita;
 }
 
-int esquerda(int linha_atual, int coluna_atual, int matriz_principal[10][10], int matriz_auxiliar[10][10])
+int direita(int linha_atual, int coluna_atual, int matriz_principal[10][10], int matriz_auxiliar[10][10])
 {
-    int posicao_esquerda, valida_posicao, valida_coordenada;
+    int posicao_direita = coluna_atual + 1;
+
+    linha_atual = posicao_direita;//atualiza posicao atual
+
+    return linha_atual;
+}
+
+//------------------------------------ESQUERDA-----------------------------------------------------------------------------------
+
+int verifica_esquerda(int linha_atual, int coluna_atual, int matriz_principal[10][10], int matriz_auxiliar[10][10])
+{
+    int posicao_esquerda, valida_posicao, valida_coordenada, valida_esquerda;
 
     posicao_esquerda = coluna_atual - 1;
 
@@ -203,24 +211,102 @@ int esquerda(int linha_atual, int coluna_atual, int matriz_principal[10][10], in
 
     valida_coordenada = verifica_coordenada(posicao_esquerda, coluna_atual, matriz_principal);// a posicao deve valer 1!!
 
-    if(valida_posicao != 0 && valida_coordenada != 0){
-        
-        printf("a coordenada posicao_esquerda eh valida\n");
-        linha_atual = posicao_esquerda;//atualiza posicao atual
+    valida_esquerda = (valida_posicao != 0) && (valida_coordenada != 0) ? 1 : 0;
 
-        return linha_atual;
+    return valida_esquerda;
+}
+
+int esquerda(int linha_atual, int coluna_atual, int matriz_principal[10][10], int matriz_auxiliar[10][10])
+{
+    int posicao_esquerda = coluna_atual - 1;
+
+    linha_atual = posicao_esquerda;//atualiza posicao atual
+
+    return linha_atual;
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+
+int resolve_labirinto(int coordenada_linha_final, int coordenada_coluna_final,
+                int coordenada_linha_atual, int coordenada_coluna_atual, int matriz_principal[10][10], int matriz_auxiliar[10][10])
+{
+    int contador = 0, valido;
+
+    if(coordenada_linha_atual != coordenada_linha_final && coordenada_coluna_atual != coordenada_coluna_final){
     
+        valido =  verifica_direita(coordenada_linha_atual, coordenada_coluna_atual, matriz_principal);
+        printf("valido: %d\n", valido);
+
+        if(valido != 0){
+            
+            coordenada_coluna_atual = direita(coordenada_linha_atual, coordenada_coluna_atual, matriz_principal, matriz_auxiliar);
+            matriz_auxiliar[coordenada_linha_atual][coordenada_coluna_atual] = 1;
+            matriz_principal[coordenada_linha_atual][coordenada_coluna_atual - 1] = 0;
+            contador++;
+
+            printf("entrou em direita\n");
+        }else{}
+        //-------------
+        valido = verifica_abaixo(coordenada_linha_atual, coordenada_coluna_atual, matriz_principal, matriz_auxiliar);
+
+        if(valido != 0){
+            coordenada_linha_atual = abaixo(coordenada_linha_atual, coordenada_coluna_atual, matriz_principal, matriz_auxiliar);
+            matriz_auxiliar[coordenada_linha_atual][coordenada_coluna_atual] = 1;
+            matriz_principal[coordenada_linha_atual - 1][coordenada_coluna_atual] = 0;
+            contador++;
+
+            printf("entrou em abaixo\n");
+        }
+        //-------------------------
+        valido = verifica_esquerda(coordenada_linha_atual, coordenada_coluna_atual, matriz_principal, matriz_auxiliar);
+
+        if(valido != 0){
+            coordenada_coluna_atual = esquerda(coordenada_linha_atual, coordenada_coluna_atual, matriz_principal, matriz_auxiliar);
+            matriz_auxiliar[coordenada_linha_atual][coordenada_coluna_atual] = 1;
+            matriz_principal[coordenada_linha_atual][coordenada_coluna_atual + 1] = 0;
+            contador++;
+
+            printf("entrou em esquerda\n");
+        }
+        //--------------------------
+
+        valido = verifica_acima(coordenada_linha_atual, coordenada_coluna_atual, matriz_principal, matriz_auxiliar);
+
+        if(valido != 0){
+            coordenada_linha_atual = acima(coordenada_linha_atual, coordenada_coluna_atual, matriz_principal, matriz_auxiliar);
+            matriz_auxiliar[coordenada_linha_atual][coordenada_coluna_atual] = 1;
+            matriz_principal[coordenada_linha_atual + 1][coordenada_coluna_atual] = 0;
+            contador++;
+
+            printf("entrou em acima\n");
+        }
+
+        printf(" passou aqui +1\n");
+        printf("contador dentro dessa vez: %d\n", contador);
+
+        contador = resolve_labirinto(coordenada_linha_final, coordenada_coluna_final, coordenada_linha_atual, coordenada_coluna_atual, matriz_principal, matriz_auxiliar);
+        printf("\n");
+        printa_matriz(matriz_auxiliar);
+        printf("\n");
+
+        int matriz_principal[10][10] = 
+        {1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 
+        0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 
+        0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 
+        1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 
+        0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 
+        1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 
+        0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 
+        0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 
+        1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 
+        0, 0, 1, 0, 0, 1, 1, 0, 0, 1};
+
     }else{
-        printf("posicao posicao_esquerda invalida\n\n");
+        return contador;
     }
 }
 
-void resolve_labirinto(int posicao_inicial, int posicao_final, int linha_atual, int coluna_atual, int matriz_principal[10][10], int matriz_auxiliar[10][10])
-{
-    //printf("RESOLVE LABIRINTO\n");
-    //printf("posicao inicial: %d\n", posicao_inicial);
-    //printf("posicao final: %d\n", posicao_final);
-}
+//_______________________________________________________MAIN______________________________________________________
 
 int main()
 {
@@ -228,7 +314,9 @@ int main()
     int matriz_auxiliar[linha][coluna];
     int coordenada_linha_inicial, coordenada_coluna_inicial;
     int coordenada_linha_final, coordenada_coluna_final;
-    
+    int coordenada_linha_atual, coordenada_coluna_atual;
+    int contador;
+
     //int coordenada_linha, coordenada_coluna;
 
     int matriz_principal[10][10] = 
@@ -243,11 +331,11 @@ int main()
     1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 
     0, 0, 1, 0, 0, 1, 1, 0, 0, 1};
     
-    printa_matriz(linha , coluna, matriz_principal);
+    printa_matriz(matriz_principal);
     printf("\n");
 
     inicializa_matriz_auxiliar(linha , coluna, matriz_auxiliar);
-    printa_matriz(linha , coluna, matriz_auxiliar);
+    printa_matriz(matriz_auxiliar);
     printf("\n");
 
     printf("COORDENADAS INICIAS\n");
@@ -260,7 +348,14 @@ int main()
     coordenada_coluna_final = define_coordenada_coluna();
     define_coordenada_linha_coluna(coordenada_linha_final, coordenada_coluna_final, matriz_principal, matriz_auxiliar);
 
-    printa_matriz(linha , coluna, matriz_auxiliar);
+    printa_matriz(matriz_auxiliar);
+    printf("\n");
 
     //resolve_labirinto(posicao_inicial, posicao_final, matriz_principal, matriz_auxiliar);
+    coordenada_linha_atual = coordenada_linha_inicial;
+    coordenada_coluna_atual = coordenada_coluna_inicial;
+
+    contador = resolve_labirinto(coordenada_linha_final, coordenada_coluna_final, coordenada_linha_atual, coordenada_coluna_atual, matriz_principal, matriz_auxiliar);
+    printf("contador: %d", contador);
+
 }
