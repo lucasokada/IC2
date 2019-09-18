@@ -62,28 +62,34 @@ int verifica_coordenada(int coordenada_linha, int coordenada_coluna, int matriz_
 }
 
 
-int define_coordenada(int matriz_principal[10][10], int matriz_auxiliar[10][10])
+int define_coordenada_linha()
 {
-    int coordenada_linha, coordenada_coluna, valido;
-    int coordenada_valida;
+    int coordenada_linha, valido;
 
     do{
+        printf("digite a coordenada linha:\n");
+        coordenada_linha = definir_pontos();  //digita a linha
+        valido = verifica_ponto(coordenada_linha); // verifica a linha
+        //printf("LINHA valido dentro de define_coordenada: %d\n", valido);
 
-        do{
-            printf("digite a coordenada linha:\n");
-            coordenada_linha = definir_pontos();  //digita a linha
-            valido = verifica_ponto(coordenada_linha); // verifica a linha
-            //printf("LINHA valido dentro de define_coordenada: %d\n", valido);
+        if(valido != 1){
+            printf("linha invalida. tente novamente\n");
+        }
 
-            if(valido != 1){
-                printf("linha invalida. tente novamente\n");
-            }
+    }while(valido != 1);
 
-        }while(valido != 1);
+    return coordenada_linha;
+}
 
-        do{
+int define_coordenada_coluna()
+{
+    int coordenada_coluna, valido;
+
+    do{
             printf("digite a coordenada coluna:\n");
+    
             coordenada_coluna = definir_pontos(); //digita a coluna
+
             valido = verifica_ponto(coordenada_coluna); // verifica a coluna
             //printf("COLUNA valido dentro de define_coordenada: %d\n", valido);
 
@@ -93,10 +99,17 @@ int define_coordenada(int matriz_principal[10][10], int matriz_auxiliar[10][10])
 
         }while(valido != 1);
 
-        //a coordenada deve ter valor 1!!!
-        coordenada_valida = verifica_coordenada(coordenada_linha, coordenada_coluna, matriz_principal);
-        
-        if(coordenada_valida != 1){
+    return coordenada_coluna;
+}
+
+int define_coordenada_linha_coluna(int coordenada_linha, int coordenada_coluna, int matriz_principal[10][10], int matriz_auxiliar[10][10])
+{
+    int valido;
+
+    do{
+        valido = verifica_coordenada(coordenada_linha, coordenada_coluna, matriz_principal);
+
+        if(valido != 1){
            
             printf("a coordenada e invalida, tente novamente\n\n");
 
@@ -107,7 +120,7 @@ int define_coordenada(int matriz_principal[10][10], int matriz_auxiliar[10][10])
             printf("coordenada aceita\n\n");
         }
 
-    }while(coordenada_valida != 1); //a coordenada inicial e final deve ser 1!!
+    }while(valido != 1);
 
     return matriz_principal[coordenada_linha][coordenada_coluna];
 }
@@ -213,8 +226,9 @@ int main()
 {
     int linha = 10, coluna = 10;
     int matriz_auxiliar[linha][coluna];
-    int posicao_inicial, posicao_final;
-    int linha_atual, coluna_atual;
+    int coordenada_linha_inicial, coordenada_coluna_inicial;
+    int coordenada_linha_final, coordenada_coluna_final;
+    
     //int coordenada_linha, coordenada_coluna;
 
     int matriz_principal[10][10] = 
@@ -236,13 +250,15 @@ int main()
     printa_matriz(linha , coluna, matriz_auxiliar);
     printf("\n");
 
-    printf("DEFINA POSICAO INICIAL\n");
-    posicao_inicial = define_coordenada(matriz_principal, matriz_auxiliar);
-    printf("\n");
+    printf("COORDENADAS INICIAS\n");
+    coordenada_linha_inicial = define_coordenada_linha();
+    coordenada_coluna_inicial = define_coordenada_coluna();
+    define_coordenada_linha_coluna(coordenada_linha_inicial, coordenada_coluna_inicial, matriz_principal, matriz_auxiliar);
 
-    printf("DEFINA POSICAO FINAL\n");
-    posicao_final = define_coordenada(matriz_principal, matriz_auxiliar);
-    printf("\n");
+    printf("COORDENADAS FINAIS\n");
+    coordenada_linha_final = define_coordenada_linha();
+    coordenada_coluna_final = define_coordenada_coluna();
+    define_coordenada_linha_coluna(coordenada_linha_final, coordenada_coluna_final, matriz_principal, matriz_auxiliar);
 
     printa_matriz(linha , coluna, matriz_auxiliar);
 
