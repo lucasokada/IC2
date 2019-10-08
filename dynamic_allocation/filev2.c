@@ -82,7 +82,7 @@ char *percorre_arquivo(const char *nome_arquivo)
     return retorno;
 }
 
-char *retorna_nome_arquivo()
+const char *retorna_nome_arquivo()
 {
     char *nome_arquivo;
     char c;
@@ -103,7 +103,7 @@ char *retorna_nome_arquivo()
 
 int main()
 {
-    char *nome_arquivo = retorna_nome_arquivo();
+    const char *nome_arquivo = retorna_nome_arquivo();
 
     char *caractere = percorre_arquivo(nome_arquivo);
     printa(caractere);
