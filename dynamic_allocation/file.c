@@ -17,48 +17,51 @@ void printa(char *caractere)
     }
 }
 
-char *percorre_arquivo(const char *nome_arquivo)
+char *retorna_nome_arquivo()
 {
-    int size = 0;
-    int quantidade_fim_arquivo = 1;
+    char *nome_arquivo;
+    int c;
+    int count_char = 0;
+
+    nome_arquivo = (char *)malloc(100 * sizeof(char));
+
+    while ((c = fgetc(stdin)) != '\r' && c != '\n')
+    {
+        nome_arquivo[count_char] = c;
+        count_char++;
+    }
+
+    nome_arquivo[count_char] = '\0';
+
+    return nome_arquivo;
+}
+
+char *percorre_arquivo()
+{
+    int size = 0, c, is_valid_fseek = 1;
     FILE *file;
-    char *tmp, *retorno;
+    char *tmp, *retorno, nome_arquivo[250];
+
+    strcpy(nome_arquivo, retorna_nome_arquivo());
+
+    file = fopen(nome_arquivo, "r");
 
     retorno = (char *)malloc(sizeof(char));
 
-    file = fopen(nome_arquivo,  "r");
+    fseek(file, 0, SEEK_END); //ponteiro posicionado no fim do arquivo
 
-    posiciona_ponteiro_arquivo(file); //ponteiro posicionado no fim do arquivo
-
-    while (quantidade_fim_arquivo <= 1)
+    while (is_valid_fseek)
     {
+        //fseek retorna valor diferente de 0, caso o posicionamento do ponteiro falhe.
+        //Logo, se falhar, significa que estamos no inicio do arquivo
         if (fseek(file, -1 * sizeof(char), SEEK_CUR) != 0)
         {
-            quantidade_fim_arquivo++;
+            is_valid_fseek = 0;
         }
         else
         {
-            char c = getc(file);
-
-            if (c == '\n')
-            {
-                fseek(file, -2 * sizeof(char), SEEK_CUR);
-                retorno[size] = c;
-                size++;
-                if (size > 0)
-                {
-                    tmp = (char *)realloc(retorno, strlen(retorno) + 1 * sizeof(char));
-
-                    if (tmp != NULL)
-                    {
-                        retorno = tmp;
-                    }
-                }
-            }
-            else
-            {
-                fseek(file, -1 * sizeof(char), SEEK_CUR);
-            }
+            c = fgetc(file);
+            fseek(file, -1 * sizeof(char), SEEK_CUR);
 
             retorno[size] = c;
 
@@ -82,30 +85,9 @@ char *percorre_arquivo(const char *nome_arquivo)
     return retorno;
 }
 
-char *retorna_nome_arquivo()
+int main(int argc, char *argv[])
 {
-    char *nome_arquivo;
-    char c;
-    int count_char = 0;
-
-    nome_arquivo = (char *)malloc(100 * sizeof(char));
-
-    while ((c = fgetc(stdin)) != EOF && c != '\n')
-    {
-        nome_arquivo[count_char] = c;
-        count_char++;
-    }
-
-    nome_arquivo[count_char] = '\0';
-
-    return nome_arquivo;
-}
-
-int main()
-{
-    char *nome_arquivo = retorna_nome_arquivo();
-
-    char *caractere = percorre_arquivo(nome_arquivo);
+    char *caractere = percorre_arquivo();
     printa(caractere);
 
     free(caractere);
