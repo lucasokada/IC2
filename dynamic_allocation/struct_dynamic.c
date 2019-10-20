@@ -8,40 +8,43 @@ struct type_informations
     char city[20];
 };
 
+struct type_informations *fill_informations()
+{
+    struct type_informations *info;
+
+    info = malloc(sizeof(struct type_informations));
+
+    printf("street name:\n"); 
+    scanf(" %[^\n]s", info->street);
+
+    printf("neighborhood:\n");
+    scanf(" %[^\n]s", info->neighborhood);
+
+    printf("city:\n");
+    scanf(" %[^\n]s", info->city);
+
+    printf("\n\n");
+
+    return info;
+}
+
+void print_informations(struct type_informations *info)
+{
+    printf("street: %s\n", info->street);
+    printf("neighborhood: %s\n", info->neighborhood);
+    printf("city: %s\n", info->city);
+}
+
 int main()
 {
     struct type_informations *informations;
     int i;
 
-    informations = malloc(2 * sizeof(struct type_informations));
+    informations = malloc(sizeof(struct type_informations));
 
-    if(informations == NULL){
-        
-        printf("cannot allocate memory\n");
-        exit(1);
+    informations = fill_informations();
 
-    }else{
-
-        for(i=0; i<2; i++)
-        {
-            printf("street name:\n");
-            scanf(" %[^\n]s", informations[i].street);
-
-            printf("neighborhood:\n");
-            scanf(" %[^\n]s", informations[i].neighborhood);
-
-            printf("city:\n");
-            scanf(" %[^\n]s", informations[i].city);
-        }
-        printf("\n\n");
-
-        for(i=0; i<2; i++)
-        {
-            printf("street %d: %s\n", i, informations[i].street);
-            printf("neighborhood: %s\n", informations[i].neighborhood);
-            printf("city: %s\n", informations[i].city);
-        }
-    }
+    print_informations(informations);
 
     return 0;
 }
