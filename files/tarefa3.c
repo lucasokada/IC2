@@ -25,17 +25,14 @@ void menu()
     printf("-----------------------------------\n");
 }
 
-int escolha()
+int func_escolha()
 {
     int escolha;
     printf("escolha a opçao:\n");
     scanf("%d", &escolha);
-}
 
-/*void verifica_nota(struct tipo_matricula_aluno matricula_aluno[], int count)
-{
-    
-}*/
+    return escolha;
+}
 
 int validar_nota(float nota)
 {
@@ -146,10 +143,10 @@ void posiciona_arquivo(int numero_linha, FILE *file)
 {
     char c;
     int quantidade_linha = 0;
-    fseek(file, 0, SEEK_SET);
-    while(quantidade_linha < numero_linha  && fscanf(file, "%c", &c))
+    fseek(file, 0, SEEK_SET);   //posiciona o ponteiro no começo do arquivo
+    while(quantidade_linha < numero_linha  && fscanf(file, "%c", &c))   //ler as linhas ate a ultima linha
     {
-        printf("%c ", c);
+        //printf("%c ", c);
         if(c == '\n'){
             quantidade_linha++;
         }
@@ -157,9 +154,27 @@ void posiciona_arquivo(int numero_linha, FILE *file)
     
 }
 
-void mudar_notas()
+void consultar_matricula()//  OPÇAO 1
 {
     int existe = verifica_existencia();
+    struct tipo_matricula_aluno aluno;
+
+    FILE *file;
+    file = fopen("tarefa3.txt", "r");
+
+    posiciona_arquivo(existe, file);
+    fscanf(file, "%d %s %f %f", &aluno.matricula, aluno.nome_aluno, &aluno.nota1, &aluno.nota2);
+
+    printf("%d %s %f %f \n", aluno.matricula, aluno.nome_aluno, aluno.nota1, aluno.nota2);
+
+    fclose(file);
+
+}
+
+void mudar_notas() // OPÇAO 2
+{
+    int existe = verifica_existencia();
+    float nota;
     struct tipo_matricula_aluno aluno;
 
     if (existe != -1)
@@ -174,7 +189,32 @@ void mudar_notas()
 
         posiciona_arquivo(existe, file);
 
-        aluno.nota1 = 4;
+        printf("mude as notas:\n");
+    
+        do //*colocar em um metodo
+        {
+            printf("mude a nota 1:\n"); 
+            scanf("%f", &nota);
+            validar_nota(nota);
+            if(!validar_nota(nota)){
+                printf("nota invalida. Tente novamente!\n");
+            }else{
+                aluno.nota1 = nota;
+            }
+        }while(!validar_nota);
+
+        do //*colocar em um metodo
+        {
+            printf("mude a nota 2:\n");
+            scanf("%f", &nota);
+            validar_nota(nota);
+            if(!validar_nota(nota)){
+                printf("nota invalida. Tente novamente!\n");
+            }else{
+                aluno.nota2 = nota;
+            }
+        }while(!validar_nota);
+
 
         fprintf(file, "%d %s %f %f", aluno.matricula, aluno.nome_aluno, aluno.nota1, aluno.nota2);
 
@@ -187,18 +227,112 @@ void mudar_notas()
     }
 }
 
+void atualizar_banco_dados(struct tipo_matricula_aluno matricula_aluno[], int quantidade_inserida, FILE *file)
+{   //metodo que atualiza o banco de dados (struct) a partir do arquivo, ja que esse possui as ultimas alteraçoes
+
+    struct tipo_matricula_aluno aluno;
+    int i=0;
+
+    file = fopen("tarefa3.txt", "r");   //abrir arquivo com permissao de leitura
+    
+    while(i < quantidade_inserida && fscanf(file, "%d %s %f %f", &aluno.matricula, aluno.nome_aluno, &aluno.nota1, &aluno.nota2)!= EOF) 
+    {
+        matricula_aluno[i].matricula = aluno.matricula;    
+        strcpy(matricula_aluno[i].nome_aluno, aluno.nome_aluno);
+        matricula_aluno[i].nota1 = aluno.nota1;
+        matricula_aluno[i].nota2 = aluno.nota2;
+
+        printf("%d, %s, %f, %f\n", matricula_aluno[i].matricula, matricula_aluno[i].nome_aluno, matricula_aluno[i].nota1, matricula_aluno[i].nota2);
+        i++;
+    }
+    fclose(file);
+}
+
+int perorrer_banco_dados(struct tipo_matricula_aluno matricula_aluno[], int quantidade_inserida)
+{   //percorre o banco de dados que foi atualizado ate a matricula desejada
+    
+    int i, matricula_desejada, posicao, igual = 0;
+
+    printf("digite a matricula desejada:\n");
+    scanf("%d", &matricula_desejada);
+    
+
+    do{
+        printf("matricula %d \n", matricula_aluno[i].matricula);
+        if(matricula_aluno[i].matricula == matricula_desejada){
+            igual = 1;
+            posicao = i;
+            printf("%d", posicao);
+        }
+        i++;
+
+    }while(igual != 1 && i < quantidade_inserida);
+    
+    return posicao; //retorna a posiçao da matricula procurada
+}
+
+int sobrescrever_dados(struct tipo_matricula_aluno matricula_aluno[], int posicao, int quantidade_inserida)
+{   //sobrescrever as informaçoes do aluno deesejado pelas informaçoes do aluno seguinte
+    matricula_aluno[posicao].matricula = matricula_aluno[posicao + 1].matricula;
+    strcpy(matricula_aluno[posicao].nome_aluno, matricula_aluno[posicao + 1].nome_aluno);
+    matricula_aluno[posicao].nota1 = matricula_aluno[posicao + 1].nota1;
+    matricula_aluno[posicao].nota2 = matricula_aluno[posicao + 1].nota2;
+
+    quantidade_inserida--;  //diminuir o tamanho do vetor 
+
+    return quantidade_inserida;
+}
+
+void excluir_matricula()    //OPÇAO 3
+{
+    struct tipo_matricula_aluno matricula_aluno[10];
+    int quantidade_inserida, posicao;
+
+    FILE *file;
+
+    atualizar_banco_dados(matricula_aluno, quantidade_inserida, file);
+    posicao = perorrer_banco_dados(matricula_aluno, quantidade_inserida);
+    quantidade_inserida = sobrescrever_dados(matricula_aluno, posicao, quantidade_inserida);
+    
+    file = fopen("tarefa3.txt", "w+");
+
+    for(int i=0; i < quantidade_inserida - 1; i++)
+    {
+        fprintf(file, "%d %s %f %f \n", matricula_aluno[i].matricula, matricula_aluno[i].nome_aluno, matricula_aluno[i].nota1, matricula_aluno[i].nota2);
+    }
+
+}
+
+void opcoes(struct tipo_matricula_aluno matricula_aluno[])
+{
+    int escolha;
+    cadastra_aluno(matricula_aluno);
+    menu();
+
+    do
+    {
+        escolha = func_escolha();
+
+        switch (escolha)
+        {
+        case 1:
+            consultar_matricula();
+            break;
+        case 2:
+            mudar_notas();
+            break;
+        case 3:
+            excluir_matricula();
+            break;
+        default:
+            break;
+        }
+    }while(escolha != 4);
+}
+
 int main()
 {
-    int teste;
-    char nome[20];
-    fscanf(stdin, "%d", &teste);
-    //fgets(nome, 20, stdin);
-    //printf("\n nome %s\n", nome);
-    fprintf(stdout, "\nvalor digitade %d\n", teste);
-    /*int tamanho = 10;
-    struct tipo_matricula_aluno matricula_aluno[tamanho];
-    int count = 0, matricula_desejada;
-*/
-    //cadastra_aluno(matricula_aluno);
-    //mudar_notas();
+    struct tipo_matricula_aluno matricula_aluno[10];
+
+    opcoes(matricula_aluno);
 }
