@@ -34,12 +34,10 @@ void cria_lista(conjunto **head, int size)
 
         if (*head == NULL)
         {
-
             *head = new_node;
-        }
-        else
-        {
-
+        
+        }else{
+            
             current = *head;
 
             while (current->next != NULL)
@@ -58,7 +56,6 @@ void cria_conjunto(conjunto **head, int size)
 
     do
     {
-
         cria_lista(head, size);
         aux_size++;
 
@@ -94,45 +91,74 @@ void remove_repetido(conjunto *head)
     }
 }
 
-void diferenca(conjunto *head_x, conjunto *head_y)
+void diferenca(conjunto *head_x, conjunto *head_y, conjunto **head_diferenca)
 {
-    conjunto *current_x, *current_y;
+    conjunto *current_x, *current_y, *current_diferenca, *new_node_diferenca;
     int repetido;
 
-    current_x = head_x;
+    current_x = head_x; 
 
-    while (current_x != NULL)
+    while (current_x != NULL) 
     {
         repetido = 0;
-        current_y = head_y;
+        current_y = head_y; 
 
         while (current_y != NULL && repetido == 0)
         {
-            if (current_x->numero == current_y->numero)
+            if (current_x->numero == current_y->numero) 
             {
-
                 repetido = 1;
-            }
-            else
-            {
+
+            }else{
 
                 current_y = current_y->next;
             }
         }
 
-        if (repetido == 0)
+        if (repetido == 0)  
         {
-            printf("%d ", current_x->numero);
+            //adiciona_conjunto(&head_diferenca, current_x);
+
+            new_node_diferenca = (conjunto *)malloc(sizeof(conjunto));
+            
+            if(*head_diferenca == NULL){
+
+                *head_diferenca = new_node_diferenca;
+
+            }else{
+
+                current_diferenca = *head_diferenca;
+
+                while(current_diferenca->next != NULL)
+                {
+                    current_diferenca = current_diferenca->next;
+                }
+
+                current_diferenca->next = new_node_diferenca;
+            }
+
+            new_node_diferenca->numero = current_x->numero;
+            new_node_diferenca->next = NULL;
         }
 
-        current_x = current_x->next;
+        current_x = current_x->next; 
     }
 }
 
-void diferenca_simetrica(conjunto *head_x, conjunto *head_y)
+void diferenca_simetrica(conjunto *head_x, conjunto *head_y, conjunto **head_simetrico)
 {
-    diferenca(head_x, head_y);
-    diferenca(head_y, head_x);
+    conjunto *current_simetrico;
+
+    *head_simetrico = head_x;
+
+    current_simetrico = head_x;
+
+    while(current_simetrico->next != NULL)
+    {
+        current_simetrico = current_simetrico->next;
+    }
+
+    current_simetrico->next = head_y;
 }
 
 void printa_lista(conjunto *head)
@@ -152,8 +178,9 @@ void printa_lista(conjunto *head)
 int main()
 {
     int size_A, size_B;
-    conjunto *head_A = NULL;
-    conjunto *head_B = NULL;
+    conjunto *head_A = NULL, *head_B = NULL;
+    conjunto *head_AB = NULL, *head_BA = NULL;
+    conjunto *head_simetrico = NULL;
 
     size_A = determina_tamanho();
     cria_conjunto(&head_A, size_A);
@@ -167,7 +194,8 @@ int main()
     //A-B
     if (size_A != 0)
     {
-        diferenca(head_A, head_B);
+        diferenca(head_A, head_B, &head_AB);
+        printa_lista(head_AB);
         printf("\n");
     }
     else
@@ -179,7 +207,8 @@ int main()
     //B-A
     if (size_B != 0)
     {
-        diferenca(head_B, head_A);
+        diferenca(head_B, head_A, &head_BA);
+        printa_lista(head_BA);
         printf("\n");
     }
     else
@@ -188,5 +217,14 @@ int main()
         printf("\n");
     }
 
-    diferenca_simetrica(head_A, head_B);
+    if(size_A != 0){
+
+        diferenca_simetrica(head_AB, head_BA, &head_simetrico);
+        printa_lista(head_simetrico);
+
+    }else{
+
+        diferenca_simetrica(head_BA, head_AB,&head_simetrico);
+        printa_lista(head_simetrico);
+    }
 }
